@@ -2,7 +2,7 @@
 
 > This repository is a template project for the graduation phase of the DAO Adventure. To check out the complete DAO Adventure repository, [click here](https://github.com/motoko-bootcamp/dao-adventure).
 
-## Requirements
+## Goal
 
 The goal of this project is to build a DAO that controls a webpage.
 
@@ -13,9 +13,11 @@ In it's most simple version, the project should have the following features:
 - Users can consult and vote on proposals.
 - If a proposal is accepted, the text on the webpage is automatically changed.
 
-You are free to add more features to the project (token, improved voting system, DAO-controlled treasury), but the ones listed above are the minimum requirements.
+You are free to add more features to the project (token, improved voting system, DAO-controlled treasury), but the ones listed above are the minimum features to be eligible for graduation.
 
-You also need to follow the requirements that are common to all projects:
+## Requirements
+
+In addition, you also need to make sure that your project follows these requirements:
 
 - Your project is written in **Motoko** (backend) and deployed on the **Internet Computer**.
 - Your code is open source and available on **GitHub.**
