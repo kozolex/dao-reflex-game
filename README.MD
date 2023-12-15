@@ -6,11 +6,23 @@
 
 The goal of this project is to build a DAO that controls a webpage.
 
-[ADD VIDEO]
+In it's most simple version, the project should have the following features:
 
-## Getting StartedP 
+- Users can login with their **Internet Identity**.
+- Users can create a proposal to change the text displayed on the webpage.
+- Users can consult and vote on proposals.
+- If a proposal is accepted, the text on the webpage is automatically changed.
 
-Make sure that [Node.js](https://nodejs.org/en/) `>= 16.x` and [`dfx`](https://internetcomputer.org/docs/current/developer-docs/build/install-upgrade-remove) `>= 0.14.x` are installed on your system.
+You are free to add more features to the project (token, improved voting system, DAO-controlled treasury), but the ones listed above are the minimum requirements.
+
+You also need to follow the requirements that are common to all projects:
+
+- Your project is written in **Motoko** (backend) and deployed on the **Internet Computer**.
+- Your applicaiton is open source and available on **GitHub.**
+
+## Getting Started
+
+Make sure that [Node.js](https://nodejs.org/en/) `>= 16.x` and [`dfx`](https://internetcomputer.org/docs/current/developer-docs/build/install-upgrade-remove) `>= 0.15.x` are installed on your system.
 
 Run the following commands in a new, empty project directory:
 
