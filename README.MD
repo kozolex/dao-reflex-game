@@ -1,6 +1,6 @@
 # Motoko Bootcamp - DAO Adventure - Template - Guided Project
 
-> This repository is an initiation for the DAO Adventure. To check out the complete DAO Adventure repository, [click here](https://github.com/motoko-bootcamp/dao-adventure).
+> This repository is a template project for the graduation phase of the DAO Adventure. To check out the complete DAO Adventure repository, [click here](https://github.com/motoko-bootcamp/dao-adventure).
 
 ## Requirements
 
@@ -18,7 +18,7 @@ You are free to add more features to the project (token, improved voting system,
 You also need to follow the requirements that are common to all projects:
 
 - Your project is written in **Motoko** (backend) and deployed on the **Internet Computer**.
-- Your applicaiton is open source and available on **GitHub.**
+- Your code is open source and available on **GitHub.**
 
 ## Getting Started
 
