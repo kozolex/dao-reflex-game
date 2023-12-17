@@ -1,6 +1,7 @@
 <script>
   import logo from ".././assets/camp_logo.png"
   
+  let inentity = null;
   let startTime;
   let endTime;
   let reactionTime;
@@ -10,13 +11,21 @@
   let attempts = 3;
   let attemptsAll = attempts;
 
+  let showImage = true;
+
+  function toggleImage() {
+    showImage = !showImage;
+  }
+
   function changeColor() {
     if (buttonColor === "green"){
       buttonColor = "red";
       document.getElementById("reactionButton").innerHTML = "Wait";
+      toggleImage();
     }else{
       buttonColor = "green"
       document.getElementById("reactionButton").innerHTML = "Klick";
+      toggleImage();
     }
     document.getElementById("reactionButton").style.backgroundColor = buttonColor;
     startTime = new Date().getTime();
@@ -34,6 +43,9 @@
       document.getElementById("reactionButton").style.backgroundColor = buttonColor;
       document.getElementById("reactionTimeDisplay").innerHTML = "Czas reakcji: " + reactionTime + " ms";
     }
+    else if(attempts == 0){
+      document.getElementById("attempts").innerHTML = "END GAME";
+    }
     else{
       reactionTime = 1000;
       document.getElementById("reactionTimeDisplay").innerHTML = "Too fast!!! Penalty + " + reactionTime + " ms";
@@ -47,9 +59,8 @@
     document.getElementById("attempts").innerHTML = "Attempts left: " + attempts;
 
   }
-
-  //setTimeout(changeColor, Math.random() * 2000 + 1000); // Zmienia kolor przycisku na zielony po losowym czasie między 1 a 3 sekundami
 </script>
+
 
 <div>
   <header class="App-header">
@@ -60,5 +71,9 @@
     <p id="reactionTimeDisplayAve">Your score average</p>
     <p id="reactionTimeSum">Sum</p>
     <p id="attempts">How many attempts left</p>
+    {#if showImage}
+      <img id="motoko_logo" src="../assets/mot.png" alt="motoko_logo" height=100>
+    {/if}
+    
   </header>
 </div>

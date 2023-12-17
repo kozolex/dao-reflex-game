@@ -30,10 +30,10 @@
 <div class="votemain">
   {#if $principal}
     <img src={mot} class="bg" alt="logo" />
-    <h1 class="slogan">Create a proposal</h1>
+    <h1 class="slogan">Create a proposal a new Joke</h1>
     <input
       bind:value={choosenproposal}
-      placeholder="Input your proposal summary here"
+      placeholder="Input your proposal joke in here"
     />
     <button on:click={handleCreateClick(choosenproposal)}>Create!</button>
     {#await promise}
