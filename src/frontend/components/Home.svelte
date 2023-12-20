@@ -1,57 +1,74 @@
 <script>
   import logo from ".././assets/camp_logo.png"
+  let status = 'Click to start';
+  let color = 'blue';
   let startTime;
   let endTime;
+  let reactionTimes = [];
   let reactionTime;
-  let reactionTimeSum = 0;
-  let reactionTimeAvr;
-  let buttonColor = "green";
-  let attempts = 0;
-  let attemptsAll = 0;
-  let showStartButton = true;
-
-  function changeColor() {
-    if (buttonColor === "red"){
-      buttonColor = "green";
-      document.getElementById("reactionButton").innerHTML = "Click !";
-    } else {
-      buttonColor = "red"
-      document.getElementById("reactionButton").innerHTML = "Wait...";
+  let highScore = 10000.0;
+  let attempts = 3;
+  let attemptsLeft = attempts;
+  
+  function endGame(){
+    let averageScore = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
+    
+    document.getElementById("reactionTimeDisplayAve").innerHTML = `Average reaction time: ${averageScore} ms.`;
+    color = 'blue';
+    status = 'Play Again?';
+    reactionTimes = [];
+    if (highScore>averageScore){
+      highScore=averageScore;
     }
-    document.getElementById("reactionButton").style.backgroundColor = buttonColor;
-    startTime = new Date().getTime();
+
   }
-
-  function calculateReactionTime() {
-    if (buttonColor === "green" && attempts) {
-      endTime = new Date().getTime();
-      reactionTime = endTime - startTime;
-      buttonColor = "red";
-      document.getElementById("reactionButton").style.backgroundColor = buttonColor;
-      document.getElementById("reactionTimeDisplay").innerHTML = "Response time: " + reactionTime + " ms";
-      reactionTimeSum += parseFloat(reactionTime);
-      attempts--;
-      if (attemptsAll-attempts > 0) {
-        reactionTimeAvr = parseFloat(reactionTimeSum / parseFloat(attemptsAll-attempts)).toFixed(2);
-        document.getElementById("reactionTimeDisplayAve").innerHTML = "Average response time: " + reactionTimeAvr + " ms";
+  function endRound(){
+      /*End round*/
+      if (reactionTimes.length === attempts) {
+          endGame();
       }
-      document.getElementById("attempts").innerHTML = "Pozostało prób: " + attempts;
-    }
-    if (attempts > 0) {
-      setTimeout(changeColor, Math.random() * 2000 + 1000);
-    }
-    else{
-      document.getElementById("startButton").innerHTML = "Let's Start !!!";
-    }
+      else {
+        status = 'Wait...';
+        color = 'red';
+        setTimeout(changeToGreen, Math.random() * 2000 + 1000);
+      }
+      attemptsLeft = attempts-reactionTimes.length
   }
 
   function startGame() {
-    document.getElementById("startButton").innerHTML = "in progress";
-    attempts = parseInt(3);
-    attemptsAll = attempts;
-    reactionTimeSum = 0;
-    document.getElementById("reactionTimeDisplayAve").innerHTML = "";
-    changeColor();
+    /*First click*/
+    if (color === 'blue') {
+      status = 'Wait...';
+      color = 'red';
+      setTimeout(changeToGreen, Math.random() * 2000 + 1000);
+    } 
+    /*Good click*/
+    else if (color === 'green') {
+      endTime = new Date();
+      reactionTime = endTime - startTime;
+      reactionTimes.push(reactionTime);
+      document.getElementById("reactionTimeDisplay").innerHTML = "Response time: " + reactionTime + " ms";
+      endRound();
+    }
+    /*Bad click*/
+    else if (color === 'red') {
+      reactionTime = 1000;
+      reactionTimes.push(reactionTime);
+      status = 'Too fast - 1s penalty';
+      color = 'red';
+      document.getElementById("reactionTimeDisplay").innerHTML = "Penalty + " + reactionTime + " ms";
+      setTimeout(changeToGreen, Math.random() * 2000 + 2000);
+      endRound();
+    }
+       
+  
+
+  }
+  
+  function changeToGreen() {
+    status = 'Now!!!';
+    color = 'green';
+    startTime = new Date();
   }
 </script>
 
@@ -61,13 +78,12 @@
     <img id="motoko_logo" src="../assets/mot.png" alt="motoko_logo" height=100>
     <p class="">Check how fast your reflexes are. </p>
     
-    <button id="reactionButton" on:click={calculateReactionTime} style="background-color: green;">Test button</button>
-    {#if showStartButton}
-    <button id="startButton" on:click={startGame}>Let's Start !!!</button>
-    {/if}
+    <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}</button>
+
     <p id="reactionTimeDisplay"></p>
     <p id="reactionTimeDisplayAve"></p>
-    <p id="attempts"></p>
+    <p id="reactionTimeDisplayHigh">Best score: {highScore}</p>
+    <p id="attempts">Attempts left: {attemptsLeft}</p>
 
   </header>
 </div>
@@ -81,7 +97,7 @@
   #reactionButton {
   /* Powiększ przycisk */
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   padding: 10px 20px;
   /* Zaokrąglij przycisk */
   border-radius: 50%;
@@ -89,28 +105,12 @@
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
   transition: all 0.3s ease 0s;
   /* Wielkość*/
-  width: 100px;
-  height: 100px;
+  width: 125px;
+  height: 125px;
   } 
   #reactionButton:active {
     /* Dodaj animację wciśnięcia */
     transform: scale(0.8);
-  }
-
-  #startButton {
-  /* Powiększ przycisk */
-  color: black;
-  background-color: gold;
-  font-size: 16px;
-  padding: 10px 20px;
-  /* Zaokrąglij przycisk */
-  border-radius: 12px;
-  /* Dodaj efekt 3D */
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
-  } 
-  #startButton:active {
-    /* Dodaj animację wciśnięcia */
-    transform: scale(0.9);
   }
 
 </style>
