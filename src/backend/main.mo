@@ -27,6 +27,16 @@ actor {
   */
   var proposals : [(Int, Proposal)] = []; // Lista propozycji
 
+  /*
+  Dokładnie ten sam efekt można uzskać tworząc:
+  public shared query (msg) func whoami() : async Principal {
+      msg.caller
+  }; 
+  */
+  public shared query ({ caller }) func whoami() : async Principal {
+      msg.caller
+  }; 
+
   public shared ({ caller }) func vote(proposalId : Int, yesOrNo : Bool) : async {
     #Ok : (Nat, Nat);
     #Err : Text;
