@@ -7,20 +7,22 @@
   let reactionTimes = [];
   let reactionTime;
   let highScore = 10000.0;
-  let attempts = 3;
+  let attempts = 5;
   let attemptsLeft = attempts;
+  let averageScore;
   
   function endGame(){
-    let averageScore = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
+    averageScore = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
     
-    document.getElementById("reactionTimeDisplayAve").innerHTML = `Average reaction time: ${averageScore} ms.`;
+    document.getElementById("reactionTimeDisplayAve").innerHTML = "Average reaction time:" + averageScore +  "ms";
     color = 'blue';
     status = 'Play Again?';
+    document.getElementById("attempts").innerHTML = " ";
     reactionTimes = [];
     if (highScore>averageScore){
       highScore=averageScore;
+      document.getElementById("reactionTimeDisplayHigh").innerHTML = "Best score:" + highScore + "ms";
     }
-
   }
   function endRound(){
       /*End round*/
@@ -33,6 +35,7 @@
         setTimeout(changeToGreen, Math.random() * 2000 + 1000);
       }
       attemptsLeft = attempts-reactionTimes.length
+      document.getElementById("attempts").innerHTML = "Attempts left:" + attemptsLeft;
   }
 
   function startGame() {
@@ -60,9 +63,6 @@
       setTimeout(changeToGreen, Math.random() * 2000 + 2000);
       endRound();
     }
-       
-  
-
   }
   
   function changeToGreen() {
@@ -74,15 +74,15 @@
 
 <div>
   <header class="App-header">
-    <p class="slogan">Motoko-Reflex-Game</p>
-    <img id="motoko_logo" src="../assets/mot.png" alt="motoko_logo" height=100>
-    <p class="">Check how fast your reflexes are. </p>
+    <p class="slogan"><img id="motoko_logo" src="../assets/mot.png" alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
+    
+    <p class="">Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. </p>
     
     <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}</button>
 
     <p id="reactionTimeDisplay"></p>
     <p id="reactionTimeDisplayAve"></p>
-    <p id="reactionTimeDisplayHigh">Best score: {highScore}</p>
+    <p id="reactionTimeDisplayHigh"></p>
     <p id="attempts">Attempts left: {attemptsLeft}</p>
 
   </header>
@@ -92,6 +92,17 @@
   .App-header {
   text-align: center;
   font-size: 1.5em; /* Możesz dostosować tę wartość według swoich potrzeb */
+  }
+  .slogan{
+    font-size: 1.75em;
+    text-align: center;
+    color: white;
+    background: -webkit-linear-gradient(left, rgb(50, 5, 118), rgb(193, 17, 224), rgb(2, 57, 146), rgb(1, 171, 250), blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: skewX(-10deg);
+    margin: 50px 0;
   }
 
   #reactionButton {
