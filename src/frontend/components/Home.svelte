@@ -1,5 +1,6 @@
 <script>
-  import logo from ".././assets/camp_logo.png"
+  import logo_mot from ".././assets/mot.png";
+  import { backend } from "../../declarations/backend";
   let status = 'Click to start';
   let color = 'blue';
   let startTime;
@@ -10,6 +11,27 @@
   let attempts = 5;
   let attemptsLeft = attempts;
   let averageScore;
+
+  //Counetr
+  var currentTime = 0;
+        var timerInterval;
+
+        function updateTimer() {
+            document.getElementById("timer").textContent = (new Date() - startTime) + "ms";
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            currentTime = 0;
+            document.getElementById("timer").textContent = " ";
+        }
+
+  //End game
   
   function endGame(){
     averageScore = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
@@ -19,9 +41,9 @@
     status = 'Play Again?';
     document.getElementById("attempts").innerHTML = " ";
     reactionTimes = [];
-    if (highScore>averageScore){
-      highScore=averageScore;
-      document.getElementById("reactionTimeDisplayHigh").innerHTML = "Best score:" + highScore + "ms";
+    console.log(highScore, averageScore);
+    if (highScore > averageScore){
+      highScore = averageScore;
     }
   }
   function endRound(){
@@ -47,6 +69,7 @@
     } 
     /*Good click*/
     else if (color === 'green') {
+      resetTimer();
       endTime = new Date();
       reactionTime = endTime - startTime;
       reactionTimes.push(reactionTime);
@@ -55,7 +78,9 @@
     }
     /*Bad click*/
     else if (color === 'red') {
-      reactionTime = 1000;
+      resetTimer();
+      endTime = new Date();
+      reactionTime = endTime - startTime + 1000;
       reactionTimes.push(reactionTime);
       status = 'Too fast - 1s penalty';
       color = 'red';
@@ -68,28 +93,30 @@
   function changeToGreen() {
     status = 'Now!!!';
     color = 'green';
+    startTimer();
     startTime = new Date();
   }
 </script>
 
-<div>
-  <header class="App-header">
-    <p class="slogan"><img id="motoko_logo" src="../assets/mot.png" alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
-    
+<div class="game">
+  
+    <p class="slogan"><img id="motoko_logo" src=logo_mot alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
     <p class="">Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. </p>
-    
-    <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}</button>
+  
+  <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}<p id="timer"></p></button>
 
-    <p id="reactionTimeDisplay"></p>
-    <p id="reactionTimeDisplayAve"></p>
-    <p id="reactionTimeDisplayHigh"></p>
-    <p id="attempts">Attempts left: {attemptsLeft}</p>
-
-  </header>
+  <p id="reactionTimeDisplay"></p>
+  <p id="reactionTimeDisplayAve"></p>
+  <p id="reactionTimeDisplayHigh">Best score: {highScore} ms</p>
+  <p id="attempts">Attempts left: {attemptsLeft}</p>
+  <input id="name" type="text" name="nazwa">
+  
+    <button on:click={startTimer}>Start</button>
+    <button on:click={resetTimer}>Reset</button>
 </div>
 
 <style>
-  .App-header {
+  .game {
   text-align: center;
   font-size: 1.5em; /* Możesz dostosować tę wartość według swoich potrzeb */
   }
@@ -109,15 +136,15 @@
   /* Powiększ przycisk */
   color: white;
   font-size: 18px;
-  padding: 10px 20px;
+  padding: 10px 10px;
   /* Zaokrąglij przycisk */
-  border-radius: 50%;
+  border-radius: 20%;
   /* Dodaj efekt 3D */
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  transition: all 0.3s ease 0s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.622);
+  transition: all 0.1s ease 0s;
   /* Wielkość*/
-  width: 125px;
-  height: 125px;
+  width: 160;
+  height: 120px;
   } 
   #reactionButton:active {
     /* Dodaj animację wciśnięcia */
