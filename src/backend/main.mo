@@ -2,13 +2,14 @@ import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Http "http";
 actor {
+    public query func greet(name : Text) : async Text{
+    return "Hello, " # name # "!"; 
+  };
 
   //*
   type Proposal = {}; // To define
 
-  public query func greet(name : Text) : async Text{
-    return "Hello, " # name # "!"; 
-  };
+
 
   public shared query (msg) func whoami() : async Principal{
     return msg.caller

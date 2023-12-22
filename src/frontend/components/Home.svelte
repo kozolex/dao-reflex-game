@@ -1,6 +1,15 @@
 <script>
   import logo_mot from ".././assets/mot.png";
   import { backend } from "../../declarations/backend";
+
+  //Komunikacja z backend
+  let name = '';
+  let greeting = '';
+
+  async function getGreeting() {
+    greeting = await backend.greet(name);
+  }
+
   let status = 'Click to start';
   let color = 'blue';
   let startTime;
@@ -11,72 +20,62 @@
   let attempts = 5;
   let attemptsLeft = attempts;
   let averageScore;
+  let currentTimeVisible = false;
 
-  //Counetr
-  var currentTime = 0;
-        var timerInterval;
+  let currentTime = 0;
+  let timerInterval;
 
-        function updateTimer() {
-            document.getElementById("timer").textContent = (new Date() - startTime) + "ms";
-        }
+  function updateTimer() {
+    currentTime = new Date() - startTime;
+  }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(updateTimer, 1);
-        }
+  function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimer, 1);
+  }
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            currentTime = 0;
-            document.getElementById("timer").textContent = " ";
-        }
+  function resetTimer() {
+    clearInterval(timerInterval);
+    currentTime = 0;
+  }
 
-  //End game
-  
   function endGame(){
     averageScore = (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2);
-    
-    document.getElementById("reactionTimeDisplayAve").innerHTML = "Average reaction time:" + averageScore +  "ms";
     color = 'blue';
     status = 'Play Again?';
-    document.getElementById("attempts").innerHTML = " ";
     reactionTimes = [];
-    console.log(highScore, averageScore);
     if (highScore > averageScore){
       highScore = averageScore;
     }
+    currentTimeVisible = false;
   }
+
   function endRound(){
-      /*End round*/
-      if (reactionTimes.length === attempts) {
-          endGame();
-      }
-      else {
-        status = 'Wait...';
-        color = 'red';
-        setTimeout(changeToGreen, Math.random() * 2000 + 1000);
-      }
-      attemptsLeft = attempts-reactionTimes.length
-      document.getElementById("attempts").innerHTML = "Attempts left:" + attemptsLeft;
+    if (reactionTimes.length === attempts) {
+      endGame();
+    }
+    else {
+      status = 'Wait...';
+      color = 'red';
+      setTimeout(changeToGreen, Math.random() * 2000 + 1000);
+    }
+    attemptsLeft = attempts-reactionTimes.length;
+    currentTimeVisible = false;
   }
 
   function startGame() {
-    /*First click*/
     if (color === 'blue') {
       status = 'Wait...';
       color = 'red';
       setTimeout(changeToGreen, Math.random() * 2000 + 1000);
     } 
-    /*Good click*/
     else if (color === 'green') {
       resetTimer();
       endTime = new Date();
       reactionTime = endTime - startTime;
       reactionTimes.push(reactionTime);
-      document.getElementById("reactionTimeDisplay").innerHTML = "Response time: " + reactionTime + " ms";
       endRound();
     }
-    /*Bad click*/
     else if (color === 'red') {
       resetTimer();
       endTime = new Date();
@@ -84,7 +83,6 @@
       reactionTimes.push(reactionTime);
       status = 'Too fast - 1s penalty';
       color = 'red';
-      document.getElementById("reactionTimeDisplay").innerHTML = "Penalty + " + reactionTime + " ms";
       setTimeout(changeToGreen, Math.random() * 2000 + 2000);
       endRound();
     }
@@ -95,36 +93,35 @@
     color = 'green';
     startTimer();
     startTime = new Date();
+    currentTimeVisible = true;
   }
 </script>
 
 <div class="game">
-  
-    <p class="slogan"><img id="motoko_logo" src=logo_mot alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
-    <p class="">Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. </p>
-  
-  <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}<p id="timer"></p></button>
+  <p class="slogan"><img id="motoko_logo" src={logo_mot} alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
+  <p>Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. </p>
+  <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}{#if currentTimeVisible}<p>{currentTime} ms</p>{/if}</button>
+  <p>Response time: {reactionTime} ms</p>
+  <p>Average reaction time: {averageScore} ms</p>
+  <p>Best score: {highScore} ms</p>
+  <p>Attempts left: {attemptsLeft}</p>
+  <input bind:value={name} type="text" name="nazwa">
+  <button on:click={getGreeting}>Get Greeting</button>
+  <p>{greeting} aaa</p>
 
-  <p id="reactionTimeDisplay"></p>
-  <p id="reactionTimeDisplayAve"></p>
-  <p id="reactionTimeDisplayHigh">Best score: {highScore} ms</p>
-  <p id="attempts">Attempts left: {attemptsLeft}</p>
-  <input id="name" type="text" name="nazwa">
-  
-    <button on:click={startTimer}>Start</button>
-    <button on:click={resetTimer}>Reset</button>
 </div>
+
 
 <style>
   .game {
   text-align: center;
-  font-size: 1.5em; /* Możesz dostosować tę wartość według swoich potrzeb */
+  font-size: 1.5em;
   }
   .slogan{
     font-size: 1.75em;
     text-align: center;
     color: white;
-    background: -webkit-linear-gradient(left, rgb(50, 5, 118), rgb(193, 17, 224), rgb(2, 57, 146), rgb(1, 171, 250), blue, indigo, violet);
+    background: linear-gradient(to right, rgb(50, 5, 118), rgb(193, 17, 224), rgb(2, 57, 146), rgb(1, 171, 250), blue, indigo, violet);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -143,7 +140,7 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.622);
   transition: all 0.1s ease 0s;
   /* Wielkość*/
-  width: 160;
+  width: 160px;
   height: 120px;
   } 
   #reactionButton:active {
