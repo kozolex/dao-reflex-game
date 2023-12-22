@@ -1,6 +1,12 @@
 <script>
   import logo_mot from ".././assets/mot.png";
+  import finger from ".././assets/finger.png";
+  import logo_df from ".././assets/logo_df.svg";
   import { backend } from "../../declarations/backend";
+  import { AuthClient } from '@dfinity/auth-client';
+  import { HttpAgent } from '@dfinity/agent';
+  import { principal } from '../stores';
+  import { daoActor } from '../stores';
 
   //Komunikacja z backend
   let name = '';
@@ -10,16 +16,40 @@
     greeting = await backend.greet(name);
   }
 
+  const handleLogin = async () => {
+    let authClient = await AuthClient.create();
+    const identityProvider =
+      process.env.DFX_NETWORK === 'ic'
+        ? 'https://identity.ic0.app'
+        : `http://127.0.0.1:4943/?canisterId=${process.env.CANISTER_ID_INTERNET_IDENTITY}`;
+
+    await authClient?.login({
+      onSuccess: () => {
+        resolve();
+      },
+      identityProvider,
+    });
+    const p = authClient.getIdentity().getPrincipal();
+    principal.set(p);
+    loginStatus = p;
+    const agent = new HttpAgent({ identity });
+    const actor = reateActor(canisterIdBackend, {
+      agent,
+    });
+    daoActor.set(actor);
+  };
+
   let status = 'Click to start';
+  let loginStatus = "Login with ID to save score";
   let color = 'blue';
   let startTime;
   let endTime;
   let reactionTimes = [];
-  let reactionTime;
+  let reactionTime = "Response time";
   let highScore = 10000.0;
   let attempts = 5;
   let attemptsLeft = attempts;
-  let averageScore;
+  let averageScore = "Average reaction time";
   let currentTimeVisible = false;
 
   let currentTime = 0;
@@ -97,9 +127,14 @@
   }
 </script>
 
+
+
+
 <div class="game">
-  <p class="slogan"><img id="motoko_logo" src={logo_mot} alt="motoko_logo" height=80> Motoko-Reflex-Game</p>
-  <p>Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. </p>
+  <p class="slogan"><img id="motoko_logo" src={logo_mot} alt="motoko_logo" height=80> Motoko-Reflex-Game <img id="finger" src={finger} alt="finger" height=100></p>
+  <p>Check how fast your reflexes are. <br> It will be tested in the {attempts} attempts. <br>
+    Win the game, get the note on hall of fame! </p>
+  
   <button id="reactionButton" style="background-color: {color};" on:click={startGame}>{status}{#if currentTimeVisible}<p>{currentTime} ms</p>{/if}</button>
   <p>Response time: {reactionTime} ms</p>
   <p>Average reaction time: {averageScore} ms</p>
@@ -107,15 +142,20 @@
   <p>Attempts left: {attemptsLeft}</p>
   <input bind:value={name} type="text" name="nazwa">
   <button on:click={getGreeting}>Get Greeting</button>
-  <p>{greeting} aaa</p>
+  <p>{greeting}</p>
+  <button id="loginButton" on:click={handleLogin}><span>{loginStatus} </span><img id="logo_df" src={logo_df} alt="logo_df" style="height: 20px"></button>
+  
+  <p>{principal}</p>
 
 </div>
+
 
 
 <style>
   .game {
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.2em;
+  line-height: 15px;
   }
   .slogan{
     font-size: 1.75em;
@@ -132,20 +172,25 @@
   #reactionButton {
   /* Powiększ przycisk */
   color: white;
-  font-size: 18px;
-  padding: 10px 10px;
+  font-size: 20px;
+  padding: 10px 10px 10px 10px;
   /* Zaokrąglij przycisk */
-  border-radius: 20%;
+  border-radius: 50%;
   /* Dodaj efekt 3D */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.622);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.75);
   transition: all 0.1s ease 0s;
   /* Wielkość*/
-  width: 160px;
-  height: 120px;
+  width: 125px;
+  height: 125px;
   } 
   #reactionButton:active {
     /* Dodaj animację wciśnięcia */
     transform: scale(0.8);
   }
-
+  #loginButton {
+    align-items: center;
+    height: 20px;
+    height: 30px;
+    
+  }
 </style>

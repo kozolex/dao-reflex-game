@@ -3,12 +3,11 @@ import Text "mo:base/Text";
 import Http "http";
 actor {
     public query func greet(name : Text) : async Text{
-    return "Hello, " # name # "!"; 
+    return "Hello, " # name # " it's me Your backend !"; 
   };
 
   //*
   type Proposal = {}; // To define
-
 
 
   public shared query (msg) func whoami() : async Principal{
