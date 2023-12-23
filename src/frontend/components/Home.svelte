@@ -11,9 +11,28 @@
   //Komunikacja z backend
   let name = '';
   let greeting = '';
+  let memberStatus;
+  let memberData;
 
   async function getGreeting() {
     greeting = await backend.greet(name);
+  }
+  let member = {
+    name: 'KoZoL',
+    score: 1000
+  };
+
+  let addMember = async () => {
+    try {
+      await actor.addMember(member);
+      alert('Member added successfully');
+    } catch (error) {
+      alert(`Error adding member: ${error.message}`);
+    }
+  };
+
+  async function getMember() {
+    memberData = await actor.getMember();
   }
 
   const handleLogin = async () => {
@@ -24,18 +43,14 @@
         : `http://127.0.0.1:4943/?canisterId=${process.env.CANISTER_ID_INTERNET_IDENTITY}`;
 
     await authClient?.login({
-      onSuccess: () => {
-        resolve();
-      },
+      onSuccess: () => {},
       identityProvider,
     });
     const p = authClient.getIdentity().getPrincipal();
     principal.set(p);
     loginStatus = p;
-    const agent = new HttpAgent({ identity });
-    const actor = reateActor(canisterIdBackend, {
-      agent,
-    });
+    const agent = new HttpAgent({ identity: p });
+    const actor = createActor(canisterIdBackend, { agent });
     daoActor.set(actor);
   };
 
@@ -47,7 +62,7 @@
   let reactionTimes = [];
   let reactionTime = "Response time";
   let highScore = 10000.0;
-  let attempts = 5;
+  let attempts = 3;
   let attemptsLeft = attempts;
   let averageScore = "Average reaction time";
   let currentTimeVisible = false;
@@ -146,6 +161,10 @@
   <button id="loginButton" on:click={handleLogin}><span>{loginStatus} </span><img id="logo_df" src={logo_df} alt="logo_df" style="height: 20px"></button>
   
   <p>{principal}</p>
+  <button on:click={addMember}>Add your score</button>
+  <p>{memberStatus}</p>
+  <button on:click={getMember}>Get data member</button>
+  <p>{memberData}</p>
 
 </div>
 
